@@ -47,5 +47,12 @@ dependencies {
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
   
+  // DataStore
   implementation("androidx.datastore:datastore-preferences:1.1.1")
+  
+  // Viewmodel
+  implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+  
+  // Coroutine
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 }
