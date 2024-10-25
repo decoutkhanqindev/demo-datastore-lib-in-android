@@ -51,7 +51,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application = a
       }
       .catch { throwable: Throwable ->
         if (throwable is IOException) {
-          // empty preferences/state with reading/writing data
+          // empty preferences/state when reading/writing data
           // (storage issues or file corruption)
           emit(emptyPreferences())
         } else {
