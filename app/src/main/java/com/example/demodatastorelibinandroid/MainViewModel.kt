@@ -1,38 +1,63 @@
 package com.example.demodatastorelibinandroid
 
 import android.app.Application
+import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "Settings")
+
 class MainViewModel(application: Application) : AndroidViewModel(application = application) {
-  private val dataStore: DataStore<Preferences> = TODO()
-  
-  val uiStateFlow: StateFlow<DataStoreUiState?> = dataStore.data
-    .map { prefs: Preferences ->
-      DataStoreUiState(
-        counter = prefs[COUNTER_KEY] ?: 0,
-        darkTheme = prefs[DARK_THEME] ?: false
-      )
-    }
-    .stateIn(
-      scope = viewModelScope,
-      started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-      initialValue = null,
-    )
+  private val dataStore: DataStore<Preferences> = application.dataStore // or use dependency injection
   
   private var counter: Int = 0
+  
+  val uiStateFlow: StateFlow<DataStoreUiState?> =
+    dataStore.data
+      .onStart {
+        println(">>>> STARTED collecting data")
+      }
+      .onCompletion {
+        println(">>>> COMPLETED collecting data")
+      }
+      .catch { throwable: Throwable ->
+        if (throwable is IOException) {
+          // empty preferences/state with reading/writing data
+          // (storage issues or file corruption)
+          emit(emptyPreferences())
+        } else {
+          throw throwable
+        }
+      }
+      .map { prefs: Preferences ->
+        DataStoreUiState(
+          counter = prefs[COUNTER_KEY] ?: 0,
+          darkTheme = prefs[DARK_THEME] ?: false
+        )
+      }
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = null
+      )
   
   fun updateData() {
     viewModelScope.launch {
@@ -44,7 +69,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application = a
 //          this[DARK_THEME] = this[DARK_THEME] ?: false
 //        }
 //      }
-      
       
       // or
       val curUpdateCounter: Int = counter++
