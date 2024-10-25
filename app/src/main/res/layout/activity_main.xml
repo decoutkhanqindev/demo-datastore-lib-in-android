@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:text="TextView"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/button_enqueue"
+        app:layout_constraintBottom_toTopOf="@+id/updateBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,26 +21,25 @@
         app:layout_constraintVertical_bias="0.5" />
 
     <Button
-        android:id="@+id/button_enqueue"
+        android:id="@+id/updateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Enqueue Work"
+        android:text="Update Data"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_cancel"
+        app:layout_constraintEnd_toStartOf="@+id/clearBtn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button_cancel"
+        android:id="@+id/clearBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Cancel Work"
+        android:text="Clear Data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_enqueue" />
-
+        app:layout_constraintStart_toEndOf="@+id/updateBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

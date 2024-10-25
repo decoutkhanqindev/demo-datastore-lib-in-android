@@ -23,9 +23,20 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// Create a DataStore instance using the preferencesDataStore delegate, with the Context as
+// receiver.
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "Settings")
 
 class MainViewModel(application: Application) : AndroidViewModel(application = application) {
+  // DataStore does help with serialization (saving data to storage)
+  // and deserialization (retrieving and reading data back
+  
+  // DataStore operations are thread-safe and atomic, meaning they won’t overlap in a way
+  // that leads to inconsistent states. If multiple updates are called, they are queued
+  // and executed sequentially to prevent conflicts.
+  
+  // To see files by DataStore saved: View -> Tool Windows -> data -> data -> com. .... nameProject
+  // -> files -> datastore
   private val dataStore: DataStore<Preferences> = application.dataStore // or use dependency injection
   
   private var counter: Int = 0
@@ -76,7 +87,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application = a
       dataStore.edit { currentMutablePrefs: MutablePreferences ->
         println(">>>> STARTED UPDATE #$curUpdateCounter")
         
-        delay(1000) // simulate long running operation....
+        delay(1000) // simulate long running operation.... (call api)
         
         currentMutablePrefs[COUNTER_KEY] = (currentMutablePrefs[COUNTER_KEY] ?: 0) + 1
         currentMutablePrefs[DARK_THEME] = currentMutablePrefs[DARK_THEME] ?: false
@@ -89,7 +100,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application = a
   fun clearData() {
     viewModelScope.launch {
       val curClearCounter: Int = counter++
-      
       
       dataStore.edit { currentMutablePrefs: MutablePreferences ->
         println(">>>> STARTED CLEAR #$curClearCounter")
