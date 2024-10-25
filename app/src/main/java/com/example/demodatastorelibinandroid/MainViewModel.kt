@@ -35,8 +35,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application = a
   // that leads to inconsistent states. If multiple updates are called, they are queued
   // and executed sequentially to prevent conflicts.
   
-  // To see files by DataStore saved: View -> Tool Windows -> data -> data -> com. .... nameProject
-  // -> files -> datastore
+  // To see files by DataStore saved:
+  // View -> Tool Windows -> data -> data -> com. .... nameProject -> files -> datastore
   private val dataStore: DataStore<Preferences> = application.dataStore // or use dependency injection
   
   private var counter: Int = 0
